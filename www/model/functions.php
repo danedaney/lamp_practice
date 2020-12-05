@@ -139,7 +139,9 @@ function entity_assoc_array($assoc_array) {
   foreach ($assoc_array as $key => $value) {
     foreach ($value as $keys => $values) {
       //特殊文字をHTMLエンティティに変換
-      $assoc_array[$key][$keys] = entity_str($values);
+      if(is_numeric($values) === false){
+        $assoc_array[$key][$keys] = entity_str($values);
+      }
     }
   }
   return $assoc_array;
