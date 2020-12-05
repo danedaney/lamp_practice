@@ -16,6 +16,9 @@ $user = get_login_user($db);
 
 $carts = get_user_carts($db, $user['user_id']);
 
+//cartsのHTMLエスケープ処理
+$carts = entity_assoc_array($carts);
+
 $total_price = sum_carts($carts);
 
 include_once VIEW_PATH . 'cart_view.php';
