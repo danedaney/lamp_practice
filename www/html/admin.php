@@ -19,4 +19,9 @@ if(is_admin($user) === false){
 }
 
 $items = get_all_items($db);
+
+//itemsのHTMLエスケープ処理
+$items = entity_assoc_array($items);
+
+
 include_once VIEW_PATH . '/admin_view.php';

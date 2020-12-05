@@ -36,11 +36,13 @@ function get_user_by_name($db, $name){
   return fetch_query($db, $sql);
 }
 
+//ログイン確認（登録されているユーザーかどうかを確認する）
 function login_as($db, $name, $password){
   $user = get_user_by_name($db, $name);
   if($user === false || $user['password'] !== $password){
     return false;
   }
+  //$_SESSIONのuser_idキーにuser_idを代入する
   set_session('user_id', $user['user_id']);
   return $user;
 }

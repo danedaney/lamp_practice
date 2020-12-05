@@ -14,7 +14,11 @@ if(is_logined() === false){
 $db = get_db_connect();
 $user = get_login_user($db);
 
+
 $carts = get_user_carts($db, $user['user_id']);
+
+//cartsのhtmlエスケープ処理
+$carts = entity_assoc_array($carts);
 
 if(purchase_carts($db, $carts) === false){
   set_error('商品が購入できませんでした。');
