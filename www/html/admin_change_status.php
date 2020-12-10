@@ -10,6 +10,10 @@ if(is_logined() === false){
   redirect_to(LOGIN_URL);
 }
 
+if (is_valid_csrf_token(get_post('csrf_token')) === false) {
+  redirect_to(LOGIN_URL);
+}
+
 $db = get_db_connect();
 
 //userもエスケープ処理？
