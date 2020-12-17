@@ -101,23 +101,6 @@ function delete_cart($db, $cart_id){
   return execute_query($db, $sql, array($cart_id));
 }
 
-function purchase_carts($db, $carts){
-  if(validate_cart_purchase($carts) === false){
-    return false;
-  }
-  foreach($carts as $cart){
-    if(update_item_stock(
-        $db, 
-        $cart['item_id'], 
-        $cart['stock'] - $cart['amount']
-      ) === false){
-      set_error($cart['name'] . 'の購入に失敗しました。');
-    }
-  }
-  
-  delete_user_carts($db, $carts[0]['user_id']);
-}
-
 function delete_user_carts($db, $user_id){
   $sql = "
     DELETE FROM
