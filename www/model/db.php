@@ -16,7 +16,7 @@ function get_db_connect(){
   return $dbh;
 }
 
-
+//テーブルの取得
 function fetch_query($db, $sql, $params = array()){
   try{
     $statement = $db->prepare($sql);
@@ -28,6 +28,7 @@ function fetch_query($db, $sql, $params = array()){
   return false;
 }
 
+//テーブルの全件取得
 function fetch_all_query($db, $sql, $params = array()){
   try{
     $statement = $db->prepare($sql);
@@ -39,12 +40,13 @@ function fetch_all_query($db, $sql, $params = array()){
   return false;
 }
 
+//テーブルの更新
 function execute_query($db, $sql, $params = array()){
   try{
     $statement = $db->prepare($sql);
     return $statement->execute($params);
   }catch(PDOException $e){
-    set_error('更新に失敗しました。');
+    set_error('更新に失敗しました。'.$e.$sql);
   }
   return false;
 }
