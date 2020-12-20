@@ -15,11 +15,13 @@ if(is_logined() === false){
 $db = get_db_connect();
 $user = get_login_user($db);
 
-$carts = get_user_carts($db, $user['user_id']);
+if(is_admin($user) === true){
+$historys = get_all_history($db);
+} else {
+$historys = get_history($db, $user['user_id']);
+}
 
-//cartsのHTMLエスケープ処理
-$carts = entity_assoc_array($carts);
-
-$total_price = sum_carts($carts);
+//historyのHTMLエスケープ処理
+$historys = entity_assoc_array($historys);
 
 include_once VIEW_PATH . 'history_view.php';
