@@ -145,6 +145,7 @@ function entity_assoc_array($assoc_array) {
   }
   return $assoc_array;
 }
+
 //特殊文字をHTMLエンティティに変換
 function entity_str($str){
   return htmlspecialchars($str,ENT_QUOTES,'UTF-8');

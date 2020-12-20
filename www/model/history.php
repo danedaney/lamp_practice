@@ -58,12 +58,32 @@ $sql = "
   execute_query($db, $sql, array($order_id, $item_id, $amount, $price));
 }
 
+function get_all_history($db){
+  $sql = "
+    SELECT
+      history.order_id,
+      history.created,
+      SUM(details.price * details.amount) AS total
+    FROM
+      history
+    JOIN
+      details
+    ON
+      history.order_id = details.order_id
+    GROUP BY
+      history.order_id
+    ORDER BY history.created DESC
+  ";
+
+  return fetch_all_query($db, $sql, array());
+}
+
 function get_history($db, $user_id){
   $sql = "
     SELECT
       history.order_id,
       history.created,
-      SUM(details.price * details.amount)
+      SUM(details.price * details.amount) AS total
     FROM
       history
     JOIN
@@ -73,28 +93,69 @@ function get_history($db, $user_id){
     WHERE
       history.user_id = ?
     GROUP BY
-      history.order_id          
+      history.order_id
+    ORDER BY history.created DESC
   ";
 
-  return fetch_query($db, $sql, array($user_id));
+  return fetch_all_query($db, $sql, array($user_id));
+}
+
+function get_all_details($db, $order_id){
+  $sql = "
+    SELECT
+      history.order_id,
+      history.created,
+      items.name,
+      details.price,
+      details.amount,
+      details.price * details.amount AS subtotal
+    FROM
+      details
+    JOIN
+      items
+    ON
+      details.item_id = items.item_id
+    JOIN
+      history
+    ON
+      details.order_id = history.order_id    
+    WHERE
+      details.order_id =?
+  ";
+  
+  return fetch_all_query($db, $sql, array($order_id));
 }
 
 function get_details($db, $user_id, $order_id){
-    $sql = "
-      SELECT
-        items.name,
-        details.price,
-        details.amount,
-        details.price * details.amount
-      FROM
-        details
-      JOIN
-        items
-      ON
-        details.item_id = items.item_id
-      WHERE
-        details.order_id =?        
-    ";
+  $sql = "
+    SELECT
+      history.order_id,
+      history.created,
+      items.name,
+      details.price,
+      details.amount,
+      details.price * details.amount AS subtotal
+    FROM
+      details
+    JOIN
+      items
+    ON
+      details.item_id = items.item_id
+    JOIN
+      history
+    ON
+      details.order_id = history.order_id    
+    WHERE
+      history.user_id =? AND details.order_id =?
+  ";
   
-    return fetch_query($db, $sql, array($user_id, $order_id));
+  return fetch_all_query($db, $sql, array($user_id, $order_id));
+}
+
+function sum_history($details){
+  $total_price = 0;
+  foreach($details as $detail){
+    $total_price += $detail['price'] * $detail['amount'];
   }
+  return $total_price;
+}
